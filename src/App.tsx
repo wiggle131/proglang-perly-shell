@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
+import { VariablesContext } from './contexts/VariablesContext';
 import HomePage from './pages/HomePage';
 import defaultTheme from './themes/defaultTheme';
 
@@ -10,7 +11,9 @@ function App() {
     <Router>
       <Switch>
         <ThemeProvider theme={defaultTheme}>
-          <Route component={HomePage} />
+          <VariablesContext.Provider value={[]}>
+            <Route component={HomePage} />
+          </VariablesContext.Provider>
         </ThemeProvider>
       </Switch>
     </Router>

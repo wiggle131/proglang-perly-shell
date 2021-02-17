@@ -1,0 +1,1 @@
+export const CONST_ERROR = `Error on line :lineNumber: Invalid constant ':token'.`;
