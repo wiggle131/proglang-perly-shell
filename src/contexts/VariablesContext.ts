@@ -3,13 +3,13 @@ import { Variable } from '../types/Variable.type';
 
 type Context = {
   variables: Variable[],
-  setVariables: React.Dispatch<React.SetStateAction<Variable[]>>,
+  appendVariables: (value: Variable[]) => void,
   clearVariables: () => void,
 }
 
 const defaultContext: Context = {
   variables: [],
-  setVariables: () => {},
+  appendVariables: (value: Variable[]) => {},
   clearVariables: () => {},
 }
 

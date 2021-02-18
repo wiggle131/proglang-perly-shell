@@ -7,7 +7,7 @@ import Declare from './VariableDeclaration';
 export function executeProgram (
   lines: Array<string>,
   variables: Variable[],
-  setVariables: React.Dispatch<React.SetStateAction<Variable[]>>,
+  appendVariables: (value: Variable[]) => void,
 ) : ExecuteOutput {
   let output : ExecuteOutput = {
     output: '',
@@ -26,7 +26,7 @@ export function executeProgram (
       parsedStatement = LexicalAnalyzer.parseStatement(line);
     }
 
-    console.log(parsedStatement,output);
+    //console.log(parsedStatement,output);
 
     if (parsedStatement.error !== '') {
       output.output = parsedStatement.error.replace(/:lineNumber/, lineNumber.toString());
@@ -34,7 +34,7 @@ export function executeProgram (
 
       return;
     } else {
-      output = runStatement(parsedStatement.actualValue, variables, setVariables);
+      output = runStatement(parsedStatement.actualValue, variables, appendVariables);
 
       if (output.status) {
         output.output = output.output.replace(/:lineNumber/, lineNumber.toString());
@@ -50,7 +50,7 @@ export function executeProgram (
 export function runStatement(
   statement: ActualValue[],
   variables: Variable[],
-  setVariables: React.Dispatch<React.SetStateAction<Variable[]>>,
+  appendVariables: (value: Variable[]) => void,
 ) : ExecuteOutput {
   let output : ExecuteOutput = {
     output: '',
@@ -63,7 +63,7 @@ export function runStatement(
   
     switch (statementType) {
       case (constantTypes.DECLARATION) :
-        //output = Declare(newStatement, variables, setVariables);
+        output = Declare(newStatement, variables, appendVariables);
         break;
     }
   }

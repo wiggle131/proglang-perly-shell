@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import AceEditor from "react-ace";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { inputRegEx } from '../../constants/RegEx';
 import { checkKeyIfSpecialCharacter } from '../../utils/StringUtils';
@@ -34,7 +34,7 @@ export default function Console(props: Props) {
         newValue = value;
       } else if (inputRegEx.test(charCode)) {
         newValue = value + charCode;
-      }console.log("INPUT", newValue);
+      }
 
       onInput(newValue);
       (refEditor as any)?.current.editor.gotoLine((value.match(/\n/g) || []).length+1);
@@ -70,7 +70,13 @@ export default function Console(props: Props) {
 const StyledEditor = styled(AceEditor)<Props>`
   width: auto !important;
 
-  color: ${(props) => props.status ? '#BB0000' : '#BFFF00'}
+  & .ace_line {
+    color: ${(props) => props.status ? '#BB0000' : '#BFFF00'};
+  }
+
+  & .ace_placeholder {
+    color: #BFFF00 !important;
+  }
 `;
 
 const Wrapper = styled.div``;

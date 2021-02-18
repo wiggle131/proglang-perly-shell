@@ -1,25 +1,23 @@
 import Stack from 'ts-data.stack';
 
 import constantTypes from '../constants/constantTypes';
-import { SYNTAX_ERROR } from '../constants/errors';
-import { declartion } from '../constants/reservedWords';
+import { DUP_VAR_ERROR, SYNTAX_ERROR } from '../constants/errors';
+import { bool, declartion } from '../constants/reservedWords';
 import { ActualValue, ExecuteOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 
 export default function Declare(
   statement: ActualValue[],
   variables: Variable[],
-  setVariables: React.Dispatch<React.SetStateAction<Variable[]>>,
+  appendVariables: (value: Variable[]) => void,
 ): ExecuteOutput {
   const output: ExecuteOutput = {
     output: '',
     status: false,
   }
   let stack = new Stack<ActualValue>();
-  let newVariables: Variable[] = [];
-  let dataType = constantTypes.DATATYPE;
 
-  console.log(statement);
+  // console.log(statement);
   statement.forEach((token) => {
     if (output.status) {
       return;
@@ -27,43 +25,71 @@ export default function Declare(
     
     if (token.type === constantTypes.VAR &&
       (stack.isEmpty() || stack.peek().value === ',')) {
+      
       if (!stack.isEmpty() && stack.peek().value === ',') {
         stack.pop();
       }
+
       stack.push(token);
-    } else if (token.type === constantTypes.CHAR ||
-      token.type === constantTypes.INT || token.type === constantTypes.FLOAT) {
+
+    } else if (isVariableType(token.type) &&
+      (!stack.isEmpty() && stack.peek().value === '=')) {
+
       stack.push(token);
+
     } else if (token.value === ',' || token.value === '=') {
+
       stack.push(token);
+      
     } else if (token.value === declartion.AS &&
-      stack.peek().type === constantTypes.VAR) {
+      (stack.peek().type === constantTypes.VAR || isVariableType(stack.peek().type))) {
+
       stack.push(token);
+
     } else if (token.type === constantTypes.DATATYPE &&
       stack.peek().value === declartion.AS) {
+
       stack.pop();
       stack.push(token);
 
       const { variables: newVars, stack: newStack } = getVariables(stack);
 
-      newVariables = newVars;
       stack = newStack;
+      
+      const duplicates = variables.find((value) =>{
+        const variable = value;
+
+        return newVars.find((value) => variable.identifier === value.identifier);
+      });
+
+      if (duplicates) {
+        output.output = DUP_VAR_ERROR.replace(/:token/, duplicates.identifier);
+        output.status = true;
+      } else {
+        appendVariables(newVars);
+      }
+      
     } else {
       output.output = SYNTAX_ERROR.replace(/:token/, token.value);
       output.status = true;
     }
+
     // if (!stack.isEmpty())
     // console.log(stack.peek());
     
   });
-
-  if (!output.status) {
-    setVariables(newVariables);
-  }
   
-  output.status = output.status || !stack.isEmpty();
+  if (!stack.isEmpty()) {
+    output.output = SYNTAX_ERROR.replace(/:token/, stack.peek().value);
+    output.status = true;
+  }
 
   return output;
+}
+
+export function isVariableType (type: Number) {
+  return type === constantTypes.CHAR || type === constantTypes.BOOL ||
+    type === constantTypes.INT || type === constantTypes.FLOAT;
 }
 
 export function getVariables(stack: Stack<ActualValue>) {
@@ -86,10 +112,32 @@ export function getVariables(stack: Stack<ActualValue>) {
       value: null,
     }
 
-    variables.push(variable);
+    if (isVariableType(token.type)) {
+      variable.value = getVariableValue(token);
+
+      stack.pop();
+    }
+
+    if (token.type === constantTypes.VAR){
+      variables.push(variable);
+    }
 
     stack.pop();    
   }
 
   return { variables, stack };
+}
+
+export function getVariableValue(token: ActualValue) {
+  let value: string | Number | boolean = token.value;
+
+  if (token.type === constantTypes.BOOL) {
+    value = value === bool.TRUE;
+  } else if (token.type !== constantTypes.CHAR) {
+    value = Number(value);
+  } else {
+    value = value.slice(1,token.value.length-1);
+  }
+
+  return value;
 }

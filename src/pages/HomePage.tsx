@@ -9,15 +9,13 @@ import { VariablesContext } from '../contexts/VariablesContext';
 import { Variable } from '../types/Variable.type';
 import * as Interpreter from '../utils/Interpreter';
 
-const defaultVariables : Variable[] = [];
-
 export default function HomePage () {
   const [code, setCode] = useState<string>('');
   const [output, setOutput] = useState<string>('');
   const [isLoading, setIsLoading] = useState<Boolean>(false);
   const [isInput, setIsInput] = useState<Boolean>(false);
   const [isError, setIsError] = useState<Boolean>(false);
-  const { variables, setVariables, clearVariables } = useContext(VariablesContext);
+  const { variables, appendVariables, clearVariables } = useContext(VariablesContext);
 
   function onChange(newValue: string) {
     setCode(newValue);
@@ -30,10 +28,9 @@ export default function HomePage () {
     const terminal = await Interpreter.executeProgram(
       code.split('\n'),
       variables,
-      setVariables,
+      appendVariables,
     );
 
-    setIsInput(true);
     setIsError(terminal.status);
     setOutput(terminal.output);
     setIsLoading(false);

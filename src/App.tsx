@@ -8,17 +8,22 @@ import defaultTheme from './themes/defaultTheme';
 import { Variable } from './types/Variable.type';
 
 function App() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [variables, setVariables] = useState<Variable[]>([]);
 
   function clearVariables () {
     variables.splice(0, variables.length);
   }
 
+  function appendVariables (value: Variable[]) {
+    value.forEach((value) => variables.push(value));
+  }
+
   return (
     <Router>
       <Switch>
         <ThemeProvider theme={defaultTheme}>
-          <VariablesContext.Provider value={{variables, setVariables, clearVariables}}>
+          <VariablesContext.Provider value={{variables, appendVariables, clearVariables}}>
             <Route component={HomePage} />
           </VariablesContext.Provider>
         </ThemeProvider>
