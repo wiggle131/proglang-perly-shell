@@ -12,8 +12,8 @@ export default function Header(props: Props) {
 
   return(
     <Wrapper>
-      <Text>CIT’s First Programming Language (CFPL)</Text>
-      <Row>
+      <Text className="mx-auto">CIT’s First Programming Language (CFPL)</Text>
+      <Row className="mr-0 ml-0">
         <Col md={6} sm={12}>
           <StyledButton onClick={onRun}>Run</StyledButton>
         </Col>
@@ -22,7 +22,9 @@ export default function Header(props: Props) {
   );
 }
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  width: 100%;
+`;
 
 const StyledButton = styled(Button)`
   width: auto;

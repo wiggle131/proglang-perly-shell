@@ -1,3 +1,16 @@
 import { createContext } from 'react';
+import { Variable } from '../types/Variable.type';
 
-export const VariablesContext = createContext([]);
+type Context = {
+  variables: Variable[],
+  setVariables: React.Dispatch<React.SetStateAction<Variable[]>>,
+  clearVariables: () => void,
+}
+
+const defaultContext: Context = {
+  variables: [],
+  setVariables: () => {},
+  clearVariables: () => {},
+}
+
+export const VariablesContext = createContext<Context>(defaultContext);

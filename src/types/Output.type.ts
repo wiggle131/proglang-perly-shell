@@ -1,5 +1,5 @@
 
-type ActualValue = {
+export type ActualValue = {
   value: string;
   type: Number;
 }

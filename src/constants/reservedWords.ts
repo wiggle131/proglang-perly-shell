@@ -27,6 +27,6 @@ export const declartion = {
 }
 
 export const bool = {
-  FALSE: 'FALSE',
-  TRUE: 'TRUE',
+  FALSE: '"FALSE"',
+  TRUE: '"TRUE"',
 }

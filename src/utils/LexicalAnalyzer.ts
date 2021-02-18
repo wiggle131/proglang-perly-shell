@@ -12,7 +12,7 @@ export function parseStatement (statement: string) : ParseOutput {
     error: '',
   };
   const tokens: string[] = tokenize(statement);
-  console.log(tokens);
+  //console.log(tokens);
 
   if (tokens[1] === '*') {
     return output;
@@ -29,7 +29,6 @@ export function parseStatement (statement: string) : ParseOutput {
 
     if (type === ERROR) {
       output.error = CONST_ERROR.replace(/:token/, tokens[i]);
-
       break;
     }
 
@@ -49,7 +48,7 @@ export function getType(token: string) {
     CONTROL,
     DECLARATION,
     DATATYPE,
-    STREAM,
+    IO,
     VAR,
     ERROR,
     OPERATOR,
@@ -71,7 +70,7 @@ export function getType(token: string) {
   } else if (dataType.BOOL === token || dataType.CHAR === token || dataType.FLOAT === token || dataType.INT === token) {
     type = DATATYPE;
   } else if (stream.INPUT === token || stream.OUTPUT === token) {
-    type = STREAM;
+    type = IO;
   } else if (varRegEx.test(token)) {
     type = VAR;
   } else if (operatorRegEx.test(token)) {
@@ -84,7 +83,7 @@ export function getType(token: string) {
     type = CHAR;
   } else if (floatRegEx.test(token)) {
     type = FLOAT;
-  }//console.log(token,type);//console.log(token,type);
+  }//console.log(token,type);
 
   return type;
 }

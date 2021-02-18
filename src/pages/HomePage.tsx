@@ -1,11 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import styled from "styled-components";
 
 import Console from './components/Console';
 import Editor from './components/Editor';
 import Header from './components/Header';
+import { VariablesContext } from '../contexts/VariablesContext';
+import { Variable } from '../types/Variable.type';
 import * as Interpreter from '../utils/Interpreter';
+
+const defaultVariables : Variable[] = [];
 
 export default function HomePage () {
   const [code, setCode] = useState<string>('');
@@ -13,6 +17,7 @@ export default function HomePage () {
   const [isLoading, setIsLoading] = useState<Boolean>(false);
   const [isInput, setIsInput] = useState<Boolean>(false);
   const [isError, setIsError] = useState<Boolean>(false);
+  const { variables, setVariables, clearVariables } = useContext(VariablesContext);
 
   function onChange(newValue: string) {
     setCode(newValue);
@@ -20,11 +25,15 @@ export default function HomePage () {
 
   async function onRun() {
     setIsLoading(true);
+    clearVariables();
+
     const terminal = await Interpreter.executeProgram(
       code.split('\n'),
-      setIsInput,
+      variables,
+      setVariables,
     );
 
+    setIsInput(true);
     setIsError(terminal.status);
     setOutput(terminal.output);
     setIsLoading(false);
@@ -34,10 +43,20 @@ export default function HomePage () {
     setOutput(value);
   }
 
+  const displayVariables = variables.map((variable, index) => {
+    return (
+      <VariableWrapper key={index}>
+        <h5>{variable.identifier}</h5>
+        <h6>Datatype: {variable.dataType}</h6>
+        <h6>Value: {String(variable.value)}</h6>
+      </VariableWrapper>
+    );
+  });
+
   return (
     <StyledContainer fluid>
-      <Header onRun={onRun} />
-      <StyledRow>
+      <StyledRow className="mr-0 ml-0">
+        <Header onRun={onRun} />
         <StyledCol md={6} sm={12} >
           <Editor value={code} onChange={onChange} />
         </StyledCol>
@@ -50,6 +69,9 @@ export default function HomePage () {
             onInput={onInput}
           />
         </StyledCol>
+        <VariableContainer>
+          {displayVariables}
+        </VariableContainer>
       </StyledRow>
     </StyledContainer>  
   );
@@ -70,5 +92,16 @@ const StyledCol = styled(Col)`
 `;
 
 const StyledRow = styled(Row)`
-  margin: 0;
+  padding: 0;
+`;
+
+const VariableContainer = styled(Container)`
+  display: flex;
+  flex-direction: row;
+`;
+
+const VariableWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0px 10px;
 `;

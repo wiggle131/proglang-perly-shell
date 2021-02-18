@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import AceEditor from "react-ace";
 import styled from "styled-components";
 
-import { charRegEx } from '../../constants/RegEx';
+import { inputRegEx } from '../../constants/RegEx';
 import { checkKeyIfSpecialCharacter } from '../../utils/StringUtils';
 
 import "ace-builds/src-noconflict/mode-text";
@@ -32,9 +32,9 @@ export default function Console(props: Props) {
         newValue = value + '\n';
       } else if (checkKeyIfSpecialCharacter(charCode)){
         newValue = value;
-      } else if (charRegEx.test(charCode)) {
+      } else if (inputRegEx.test(charCode)) {
         newValue = value + charCode;
-      }
+      }console.log("INPUT", newValue);
 
       onInput(newValue);
       (refEditor as any)?.current.editor.gotoLine((value.match(/\n/g) || []).length+1);

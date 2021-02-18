@@ -2,7 +2,7 @@ const constantTypes = {
   ERROR: -1,
   DATATYPE: 0,
   BLOCK: 1,
-  STREAM: 2,
+  IO: 2,
   CONTROL: 3,
   DECLARATION: 4,
   BOOL: 5,
