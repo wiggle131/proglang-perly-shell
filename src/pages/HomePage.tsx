@@ -31,6 +31,7 @@ export default function HomePage () {
       appendVariables,
     );
 
+    setIsInput(true);
     setIsError(terminal.status);
     setOutput(terminal.output);
     setIsLoading(false);

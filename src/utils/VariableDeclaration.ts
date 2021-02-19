@@ -38,7 +38,8 @@ export default function Declare(
       stack.pop();
       stack.push(token);
 
-    } else if (token.value === ',' || token.value === '=') {
+    } else if ((token.value === ',' || token.value === '=') &&
+      (stack.peek().type === constantTypes.VAR || isVariableType(stack.peek().type))) {
 
       stack.push(token);
       
@@ -77,8 +78,11 @@ export default function Declare(
 
         output.output = DUP_VAR_ERROR.replace(/:token/, identifier ?? '');
         output.status = true;
-      } else {
+      } else if (stack.isEmpty()) {
         appendVariables(newVars);
+      } else {
+        output.output = SYNTAX_ERROR.replace(/:token/, stack.peek().value);
+        output.status = true;
       }
       
     } else {
@@ -107,6 +111,7 @@ export function isVariableType (type: Number) {
 export function getVariables(stack: Stack<ActualValue>) {
   const variables: Variable[] = [];
   const variableType = stack.peek().value;
+  let token = stack.peek();
   let variable: Variable = {
     dataType: '',
     identifier: '',
@@ -140,6 +145,10 @@ export function getVariables(stack: Stack<ActualValue>) {
     }
 
     stack.pop();    
+  }
+
+  if (variable.value) {console.log(variable)
+    stack.push(token);
   }
 
   return { variables, stack };
