@@ -1,4 +1,5 @@
 import constantTypes from '../constants/constantTypes';
+import { SYNTAX_ERROR } from '../constants/errors';
 import { ActualValue, ExecuteOutput, ParseOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 import * as LexicalAnalyzer from './LexicalAnalyzer';
@@ -81,7 +82,7 @@ export function runStatement(
   };
   
 
-  if (statement.length > 0) {
+  if (statement.length > 0) {console.log(statement)
     const statementType = statement[0].type;
     const newStatement = statement.slice(1);
     const firstWord = statement[0].value;
@@ -100,7 +101,9 @@ export function runStatement(
         // console.log(statement.slice(1));
         output = inputValue(newStatement, firstWord);
         break;
-
+      default:
+        output.output = SYNTAX_ERROR.replace(/:token/, statement[0].value);
+        output.status = true;
     }
   }
 
