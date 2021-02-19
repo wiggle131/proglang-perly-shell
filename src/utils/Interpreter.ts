@@ -88,7 +88,7 @@ export function runStatement(
   };
   
 
-  if (statement.length > 0) {
+  if (statement.length > 0) {console.log(statement)
     const statementType = statement[0].type;
     const newStatement = statement.slice(1);
     const firstWord = statement[0].value;
