@@ -34,7 +34,8 @@ export default function Declare(
 
     } else if (isVariableType(token.type) &&
       (!stack.isEmpty() && stack.peek().value === '=')) {
-
+      
+      stack.pop();
       stack.push(token);
 
     } else if (token.value === ',' || token.value === '=') {
@@ -62,8 +63,19 @@ export default function Declare(
         return newVars.find((value) => variable.identifier === value.identifier);
       });
 
-      if (duplicates) {
-        output.output = DUP_VAR_ERROR.replace(/:token/, duplicates.identifier);
+      const duplicatesWithin = newVars.find((value, index) =>{
+        const variable = value;
+        const myIndex = index;
+
+        return newVars.find((value, index) =>
+          variable.identifier === value.identifier && myIndex !== index
+        );
+      });
+
+      if (duplicates || duplicatesWithin) {
+        const identifier = duplicates?.identifier ?? duplicatesWithin?.identifier;
+
+        output.output = DUP_VAR_ERROR.replace(/:token/, identifier ?? '');
         output.status = true;
       } else {
         appendVariables(newVars);
@@ -106,20 +118,25 @@ export function getVariables(stack: Stack<ActualValue>) {
   while(!stack.isEmpty()) {
     const token = stack.peek();
 
-    variable = {
-      dataType: variableType,
-      identifier: token.value,
-      value: null,
-    }
-
     if (isVariableType(token.type)) {
       variable.value = getVariableValue(token);
-
-      stack.pop();
     }
 
     if (token.type === constantTypes.VAR){
+      variable = {
+        ...variable,
+        dataType: variableType,
+        identifier: token.value,
+      }
+
+      // console.log(variable, token);
       variables.push(variable);
+
+      variable = {
+        dataType: variableType,
+        identifier: '',
+        value: null,
+      }
     }
 
     stack.pop();    
