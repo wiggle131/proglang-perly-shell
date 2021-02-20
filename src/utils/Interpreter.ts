@@ -35,7 +35,7 @@ export function executeProgram (
       parsedStatement = LexicalAnalyzer.parseStatement(line);
     }
 
-    //console.log(parsedStatement,output);
+    console.log(parsedStatement,output);
 
     if (parsedStatement.error !== '') {
       output.output = parsedStatement.error.replace(/:lineNumber/, lineNumber.toString());
@@ -93,9 +93,14 @@ export function runStatement(
       case (constantTypes.DECLARATION) :
         output = Declare(newStatement, variables, appendVariables);
         break;
+<<<<<<< HEAD
 
       case(constantTypes.BLOCK) :
         output = checkCompleteBlock(firstWord);
+=======
+<<<<<<< HEAD
+      case (constantTypes.BLOCK) :
+>>>>>>> fc6f9c5 (Can determine if start or stop is missing.)
         break;
 
       case(constantTypes.IO):
@@ -108,6 +113,19 @@ export function runStatement(
       default:
         output.output = SYNTAX_ERROR.replace(/:token/, statement[0].value);
         output.status = true;
+=======
+
+      case(constantTypes.BLOCK) :
+        output = checkCompleteBlock(firstWord);
+        break;
+
+      case(constantTypes.IO):
+        // console.log(statement[0].value);
+        // console.log(statement.slice(1));
+        output = inputValue(newStatement, firstWord);
+        break;
+
+>>>>>>> 60672c7 (Can determine if start or stop is missing.)
     }
   }
 

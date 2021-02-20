@@ -9,6 +9,7 @@ export default function checkCompleteBlock(statement: string): ExecuteOutput {
 
     let counter = localStorage.getItem('flag');
     let flag = Number(counter);
+    let integer = Number(counter);
     let updateValue=0;
     let output : ExecuteOutput = {
       output: '',
@@ -29,6 +30,14 @@ export default function checkCompleteBlock(statement: string): ExecuteOutput {
     }
 
     if(statement == "STOP" && flag==0){
+
+    if(statement == "START"){
+        // console.log("START Flag");
+        updateValue = 1;
+        localStorage.setItem('flag', updateValue.toString());
+    }
+
+    if(statement == "STOP" && integer==0){
         // console.log("Missing Start Keyword");
         output.output = MISS_START_ERROR;
     }
@@ -39,6 +48,7 @@ export default function checkCompleteBlock(statement: string): ExecuteOutput {
     }
 
     if(statement == "STOP" && flag==1){
+    if(statement == "STOP" && integer==1){
         // console.log("Full Block");
         updateValue = 2;
         localStorage.setItem('flag', updateValue.toString());

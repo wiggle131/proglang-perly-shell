@@ -30,7 +30,6 @@ export default function HomePage () {
       appendVariables,
       setOutput,
     );
-    console.log();
     setIsError(terminal.status);
     setOutput(terminal.output);
     setIsLoading(false);
