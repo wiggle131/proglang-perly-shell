@@ -8,7 +8,6 @@ import checkCompleteBlock from './Block';
 import { stat } from 'fs';
 import { MISS_STOP_ERROR,UNEXP_LINE_ERROR } from '../constants/errors';
 import inputValue from './Input';
-
 import Output from './Output';
 
 export function executeProgram (
@@ -102,6 +101,7 @@ export function runStatement(
         output = checkCompleteBlock(firstWord);
         break;
       case (constantTypes.BLOCK) :
+        output = checkCompleteBlock(firstWord);
         break;
       case (constantTypes.IO) :
         if(statement[0].value === "OUTPUT:"){
