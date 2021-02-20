@@ -3,6 +3,11 @@ import { ActualValue, ExecuteOutput, ParseOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 import * as LexicalAnalyzer from './LexicalAnalyzer';
 import Declare from './VariableDeclaration';
+import checkCompleteBlock from './Block';
+import { stat } from 'fs';
+import { MISS_STOP_ERROR,UNEXP_LINE_ERROR } from '../constants/errors';
+import inputValue from './Input';
+
 
 export function executeProgram (
   lines: Array<string>,
@@ -14,6 +19,8 @@ export function executeProgram (
     status: false,
   };
   let lineNumber = 0;
+  
+
 
   lines.forEach((line) => {
     const cleanedLine = line.trim();
@@ -26,7 +33,7 @@ export function executeProgram (
       parsedStatement = LexicalAnalyzer.parseStatement(line);
     }
 
-    //console.log(parsedStatement,output);
+    console.log(parsedStatement,output);
 
     if (parsedStatement.error !== '') {
       output.output = parsedStatement.error.replace(/:lineNumber/, lineNumber.toString());
@@ -44,8 +51,24 @@ export function executeProgram (
     }
   });
 
+    let counter = localStorage.getItem('flag');
+    let flag = Number(counter);
+
+    if(lines[lines.length-1] != "STOP" && flag == 1){
+      output.output = MISS_STOP_ERROR;
+    }
+
+    if(lines[lines.length-1] != "STOP" && flag == 2){
+      output.output = UNEXP_LINE_ERROR;
+  }
+
+    
+
+  localStorage.setItem('flag', '0'); //reset the flag after running the entire code
+
   return output;
 }
+
 
 export function runStatement(
   statement: ActualValue[],
@@ -56,15 +79,28 @@ export function runStatement(
     output: '',
     status: false,
   };
+  
 
   if (statement.length > 0) {
     const statementType = statement[0].type;
     const newStatement = statement.slice(1);
+    const firstWord = statement[0].value;
   
     switch (statementType) {
       case (constantTypes.DECLARATION) :
         output = Declare(newStatement, variables, appendVariables);
         break;
+
+      case(constantTypes.BLOCK) :
+        output = checkCompleteBlock(firstWord);
+        break;
+
+      case(constantTypes.IO):
+        // console.log(statement[0].value);
+        // console.log(statement.slice(1));
+        output = inputValue(newStatement, firstWord);
+        break;
+
     }
   }
 
