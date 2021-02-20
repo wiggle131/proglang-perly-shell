@@ -100,9 +100,6 @@ export function runStatement(
       case(constantTypes.BLOCK) :
         output = checkCompleteBlock(firstWord);
         break;
-      case (constantTypes.BLOCK) :
-        output = checkCompleteBlock(firstWord);
-        break;
       case (constantTypes.IO) :
         if(statement[0].value === "OUTPUT:"){
           output = Output(newStatement, variables);
