@@ -33,7 +33,7 @@ export function executeProgram (
       parsedStatement = LexicalAnalyzer.parseStatement(line);
     }
 
-    console.log(parsedStatement,output);
+    //console.log(parsedStatement,output);
 
     if (parsedStatement.error !== '') {
       output.output = parsedStatement.error.replace(/:lineNumber/, lineNumber.toString());
