@@ -13,6 +13,7 @@ function App() {
   const [variables, setVariables] = useState<Variable[]>([]);
   const [value, setValue] = useState<string>('');
   const [consoleOutput, setConsoleOutput] = useState<string>('');
+  const [consoleInput, setConsoleInput] = useState<string>('');
   const [isInput, setIsInput] = useState<boolean>(false);
   const [blockFlag, setBlockFlag] = useState<number>(0);
   localStorage.setItem('blockFlag', '0');
@@ -28,13 +29,19 @@ function App() {
   function getInput() {
     setIsInput(true);
 
-    while (isInput){}
-
     return value;
+  }
+
+  function setInput(value: string) {
+    setConsoleInput(value);
   }
 
   function setOutput(value: string) {
     setConsoleOutput(value);
+  }
+
+  function clearInput() {
+    setConsoleInput('');
   }
 
   function clearOutput() {
@@ -58,7 +65,18 @@ function App() {
       <Switch>
         <ThemeProvider theme={defaultTheme}>
           <VariablesContext.Provider value={{variables, appendVariables, clearVariables}}>
-            <ConsoleContext.Provider value={{consoleOutput, isInput, getInput, setIsInput: handleSetIsInput, setOutput, clearOutput}}>
+            <ConsoleContext.Provider value={
+              {
+                consoleInput,
+                consoleOutput,
+                isInput,
+                getInput,
+                setIsInput: handleSetIsInput,
+                setInput,
+                setOutput,
+                clearInput,
+                clearOutput,
+              }}>
               <Route component={HomePage} />
             </ConsoleContext.Provider>
           </VariablesContext.Provider>

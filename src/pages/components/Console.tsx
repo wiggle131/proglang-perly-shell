@@ -17,29 +17,27 @@ type Props = {
 export default function Console(props: Props) {
   const { isLoading, status } = props;
   const refEditor = useRef<AceEditor>(null);
-  const [value, setValue] = useState('');
-  const { consoleOutput, isInput, setIsInput } = useContext(ConsoleContext);
+  const { consoleInput, consoleOutput, isInput, setIsInput, setInput, setOutput } = useContext(ConsoleContext);
   const placeholder = isLoading ? 'Running program...' : 'CFPL Interpreter (2021)\nPerly Shell Team';
 
   function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (isInput && setIsInput) {
+    if (isInput) {
       const charCode = event.key;
-      let newValue = value;
+      let newValue = consoleInput;
 
       if (charCode === 'Backspace') {
-        newValue = value.slice(0, -1);
+        newValue = consoleInput.slice(0, -1);
       } else if (charCode === 'Enter') {
-        newValue = value + '\n';
-
         setIsInput(false);
-        setValue(newValue);
       } else if (checkKeyIfSpecialCharacter(charCode)){
-        newValue = value;
+        newValue = consoleInput;
       } else if (inputRegEx.test(charCode)) {
-        newValue = value + charCode;
+        newValue = consoleInput + charCode;
       }
 
-      (refEditor as any)?.current.editor.gotoLine((value.match(/\n/g) || []).length+1);
+      setInput(newValue);console.log(newValue)
+      setOutput(newValue);
+      (refEditor as any)?.current.editor.gotoLine((newValue.match(/\n/g) || []).length+1);
       (refEditor as any)?.current.editor.navigateLineEnd();
     }
   }
