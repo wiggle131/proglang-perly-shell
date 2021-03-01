@@ -66,7 +66,7 @@ export default function Console(props: Props) {
         showPrintMargin={true}
         status={status}
         theme="terminal"
-        value={value}
+        value={consoleOutput}
       />
     </Wrapper>
   );

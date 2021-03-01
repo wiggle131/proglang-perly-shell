@@ -87,7 +87,7 @@ export function runStatement(
   };
   
 
-  if (statement.length > 0) {console.log(statement)
+  if (statement.length > 0) {
     const statementType = statement[0].type;
     const newStatement = statement.slice(1);
     const firstWord = statement[0].value;
@@ -110,6 +110,8 @@ export function runStatement(
         } else {
           output = inputValue(newStatement, firstWord);
         }
+        break;
+      case (constantTypes.VAR) :
         break;
       case (constantTypes.VAR) :
         break;
