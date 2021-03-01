@@ -5,18 +5,17 @@ import styled from "styled-components";
 import Console from './components/Console';
 import Editor from './components/Editor';
 import Header from './components/Header';
+import { ConsoleContext } from '../contexts/ConsoleContext';
 import { VariablesContext } from '../contexts/VariablesContext';
-import { Variable } from '../types/Variable.type';
 import * as Interpreter from '../utils/Interpreter';
 
 export default function HomePage () {
   const [code, setCode] = useState<string>('');
-  const [output, setOutput] = useState<string>('');
   const [isLoading, setIsLoading] = useState<Boolean>(false);
-  const [isInput, setIsInput] = useState<Boolean>(false);
   const [isError, setIsError] = useState<Boolean>(false);
+  const { getInput, setOutput } = useContext(ConsoleContext);
   const { variables, appendVariables, clearVariables } = useContext(VariablesContext);
-
+  
   function onChange(newValue: string) {
     setCode(newValue);
   }
@@ -29,16 +28,12 @@ export default function HomePage () {
       code.split('\n'),
       variables,
       appendVariables,
+      setOutput,
     );
-
-    setIsInput(true);
+    console.log();
     setIsError(terminal.status);
     setOutput(terminal.output);
     setIsLoading(false);
-  }
-
-  function onInput(value: string) {
-    setOutput(value);
   }
 
   const displayVariables = variables.map((variable, index) => {
@@ -60,18 +55,15 @@ export default function HomePage () {
         </StyledCol>
         <StyledCol md={6} sm={12} >
           <Console
-            isInput={isInput}
             isLoading={isLoading}
             status={isError}
-            value={output}
-            onInput={onInput}
           />
         </StyledCol>
         <VariableContainer>
           {displayVariables}
         </VariableContainer>
       </StyledRow>
-    </StyledContainer>  
+    </StyledContainer>
   );
 }
 

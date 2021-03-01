@@ -147,7 +147,7 @@ export function getVariables(stack: Stack<ActualValue>) {
     stack.pop();    
   }
 
-  if (variable.value) {console.log(variable)
+  if (variable.value) {
     stack.push(token);
   }
 

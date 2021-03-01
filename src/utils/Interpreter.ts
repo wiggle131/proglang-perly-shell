@@ -9,6 +9,7 @@ export function executeProgram (
   lines: Array<string>,
   variables: Variable[],
   appendVariables: (value: Variable[]) => void,
+  setOutput: (value: string) => void,
 ) : ExecuteOutput {
   let output : ExecuteOutput = {
     output: '',
@@ -35,7 +36,7 @@ export function executeProgram (
 
       return;
     } else {
-      output = runStatement(parsedStatement.actualValue, variables, appendVariables);
+      output = runStatement(parsedStatement.actualValue, variables, appendVariables, setOutput);
 
       if (output.status) {
         output.output = output.output.replace(/:lineNumber/, lineNumber.toString());
@@ -52,13 +53,14 @@ export function runStatement(
   statement: ActualValue[],
   variables: Variable[],
   appendVariables: (value: Variable[]) => void,
+  setOutput: (value: string) => void,
 ) : ExecuteOutput {
   let output : ExecuteOutput = {
     output: '',
     status: false,
   };
 
-  if (statement.length > 0) {console.log(statement)
+  if (statement.length > 0) {
     const statementType = statement[0].type;
     const newStatement = statement.slice(1);
   
@@ -69,6 +71,8 @@ export function runStatement(
       case (constantTypes.BLOCK) :
         break;
       case (constantTypes.IO) :
+        break;
+      case (constantTypes.VAR) :
         break;
       default:
         output.output = SYNTAX_ERROR.replace(/:token/, statement[0].value);

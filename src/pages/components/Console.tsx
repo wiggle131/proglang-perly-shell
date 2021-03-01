@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import AceEditor from "react-ace";
 import styled, { css } from "styled-components";
 
+import { ConsoleContext } from '../../contexts/ConsoleContext';
 import { inputRegEx } from '../../constants/RegEx';
 import { checkKeyIfSpecialCharacter } from '../../utils/StringUtils';
 
@@ -9,20 +10,19 @@ import "ace-builds/src-noconflict/mode-text";
 import "ace-builds/src-noconflict/theme-terminal";
 
 type Props = {
-  isInput?: Boolean
   isLoading?: Boolean;
   status: Boolean;
-  value: string;
-  onInput?: (value: string) => void;
 };
 
 export default function Console(props: Props) {
-  const { isInput, isLoading, status, value, onInput } = props;
+  const { isLoading, status } = props;
   const refEditor = useRef<AceEditor>(null);
+  const [value, setValue] = useState('');
+  const { consoleOutput, isInput, setIsInput } = useContext(ConsoleContext);
   const placeholder = isLoading ? 'Running program...' : 'CFPL Interpreter (2021)\nPerly Shell Team';
 
   function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (isInput && onInput) {
+    if (isInput && setIsInput) {
       const charCode = event.key;
       let newValue = value;
 
@@ -30,13 +30,15 @@ export default function Console(props: Props) {
         newValue = value.slice(0, -1);
       } else if (charCode === 'Enter') {
         newValue = value + '\n';
+
+        setIsInput(false);
+        setValue(newValue);
       } else if (checkKeyIfSpecialCharacter(charCode)){
         newValue = value;
       } else if (inputRegEx.test(charCode)) {
         newValue = value + charCode;
       }
 
-      onInput(newValue);
       (refEditor as any)?.current.editor.gotoLine((value.match(/\n/g) || []).length+1);
       (refEditor as any)?.current.editor.navigateLineEnd();
     }
@@ -61,7 +63,7 @@ export default function Console(props: Props) {
         showPrintMargin={true}
         status={status}
         theme="terminal"
-        value={value}
+        value={consoleOutput}
       />
     </Wrapper>
   );

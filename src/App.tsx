@@ -1,15 +1,39 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
+import { ConsoleContext } from './contexts/ConsoleContext';
 import { VariablesContext } from './contexts/VariablesContext';
 import HomePage from './pages/HomePage';
 import defaultTheme from './themes/defaultTheme';
 import { Variable } from './types/Variable.type';
 
 function App() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [variables, setVariables] = useState<Variable[]>([]);
+  const [value, setValue] = useState<string>('');
+  const [consoleOutput, setConsoleOutput] = useState<string>('');
+  const [isInput, setIsInput] = useState<boolean>(false);
+
+  function getInput() {
+    setIsInput(true);
+
+    while (isInput){}
+
+    return value;
+  }
+
+  function setOutput(value: string) {
+    setConsoleOutput(value);
+  }
+
+  function clearOutput() {
+    setConsoleOutput('');
+  }
+
+  function handleSetIsInput(value: boolean) {
+    setIsInput(value);
+  }
 
   function clearVariables () {
     variables.splice(0, variables.length);
@@ -24,7 +48,9 @@ function App() {
       <Switch>
         <ThemeProvider theme={defaultTheme}>
           <VariablesContext.Provider value={{variables, appendVariables, clearVariables}}>
-            <Route component={HomePage} />
+            <ConsoleContext.Provider value={{consoleOutput, isInput, getInput, setIsInput: handleSetIsInput, setOutput, clearOutput}}>
+              <Route component={HomePage} />
+            </ConsoleContext.Provider>
           </VariablesContext.Provider>
         </ThemeProvider>
       </Switch>
