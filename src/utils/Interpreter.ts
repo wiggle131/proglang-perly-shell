@@ -43,7 +43,12 @@ export function executeProgram (
 
       return;
     } else {
-      output = runStatement(parsedStatement.actualValue, variables, appendVariables, setOutput);
+      output = runStatement(
+        parsedStatement.actualValue,
+        variables,
+        appendVariables,
+        setOutput,
+      );
 
       if (output.status) {
         output.output = output.output.replace(/:lineNumber/, lineNumber.toString());
@@ -53,20 +58,19 @@ export function executeProgram (
     }
   });
 
-    let counter = localStorage.getItem('flag');
-    let flag = Number(counter);
+    let flag = Number(localStorage.getItem('blockFlag'));
 
     if(lines[lines.length-1] != "STOP" && flag == 1){
       output.output = MISS_STOP_ERROR;
+      output.status = true;
     }
 
     if(lines[lines.length-1] != "STOP" && flag == 2){
       output.output = UNEXP_LINE_ERROR;
+      output.status = true;
   }
 
-    
-
-  localStorage.setItem('flag', '0'); //reset the flag after running the entire code
+  localStorage.setItem('blockFlag', '0');
 
   return output;
 }
@@ -93,19 +97,10 @@ export function runStatement(
       case (constantTypes.DECLARATION) :
         output = Declare(newStatement, variables, appendVariables);
         break;
-<<<<<<< HEAD
-
       case(constantTypes.BLOCK) :
         output = checkCompleteBlock(firstWord);
-=======
-<<<<<<< HEAD
-      case (constantTypes.BLOCK) :
->>>>>>> fc6f9c5 (Can determine if start or stop is missing.)
-        break;
-
+        break;  
       case(constantTypes.IO):
-        // console.log(statement[0].value);
-        // console.log(statement.slice(1));
         output = inputValue(newStatement, firstWord);
         break;
       case (constantTypes.VAR) :
@@ -113,19 +108,6 @@ export function runStatement(
       default:
         output.output = SYNTAX_ERROR.replace(/:token/, statement[0].value);
         output.status = true;
-=======
-
-      case(constantTypes.BLOCK) :
-        output = checkCompleteBlock(firstWord);
-        break;
-
-      case(constantTypes.IO):
-        // console.log(statement[0].value);
-        // console.log(statement.slice(1));
-        output = inputValue(newStatement, firstWord);
-        break;
-
->>>>>>> 60672c7 (Can determine if start or stop is missing.)
     }
   }
 

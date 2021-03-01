@@ -22,7 +22,7 @@ export default function inputValue(statement: ActualValue[], firstWord: String):
         });
     }
         
-        console.log(count);
+        //console.log(count);
         return output;
 }
 

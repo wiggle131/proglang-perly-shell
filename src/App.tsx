@@ -14,6 +14,16 @@ function App() {
   const [value, setValue] = useState<string>('');
   const [consoleOutput, setConsoleOutput] = useState<string>('');
   const [isInput, setIsInput] = useState<boolean>(false);
+  const [blockFlag, setBlockFlag] = useState<number>(0);
+  localStorage.setItem('blockFlag', '0');
+
+  function handleSetBlockFlag(value: number){
+    setBlockFlag(value);console.log(blockFlag);
+  }
+
+  function resetBlockFlag(){
+    setBlockFlag(0);
+  }
 
   function getInput() {
     setIsInput(true);
