@@ -110,6 +110,8 @@ export function runStatement(
         break;
       case (constantTypes.VAR) :
         break;
+      case (constantTypes.VAR) :
+        break;
       default:
         output.output = SYNTAX_ERROR.replace(/:token/, statement[0].value);
         output.status = true;
