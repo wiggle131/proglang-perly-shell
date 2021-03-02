@@ -6,6 +6,8 @@ export const DUP_VAR_ERROR = `Variable error on line :lineNumber: Duplicate vari
 
 export const START_ERROR = 'START is already implemented';
 
+export const STOP_ERROR = 'STOP is already implemented';
+
 export const MISS_START_ERROR = 'Missing START statement.';
 
 export const MISS_STOP_ERROR = 'Missing STOP statement.';

@@ -60,7 +60,7 @@ export function executeProgram (
 
     let flag = Number(localStorage.getItem('blockFlag'));
 
-    if(lines[lines.length-1] != "STOP" && flag == 1){
+    if(flag !== 2){
       output.output = MISS_STOP_ERROR;
       output.status = true;
     }
@@ -68,9 +68,9 @@ export function executeProgram (
     if(lines[lines.length-1] != "STOP" && flag == 2){
       output.output = UNEXP_LINE_ERROR;
       output.status = true;
-  }
+    }
 
-  localStorage.setItem('blockFlag', '0');
+  localStorage.setItem('blockFlag', '0'); //reset the blockFlag after reading all the lines
 
   return output;
 }
