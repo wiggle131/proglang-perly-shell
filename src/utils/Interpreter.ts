@@ -40,7 +40,6 @@ export function executeProgram (
     if (parsedStatement.error !== '') {
       output.output = parsedStatement.error.replace(/:lineNumber/, lineNumber.toString());
       output.status = true;
-
       return;
     } else {
       output = runStatement(
@@ -52,9 +51,10 @@ export function executeProgram (
 
       if (output.status) {
         output.output = output.output.replace(/:lineNumber/, lineNumber.toString());
+        console.log(output.output);
+        return;
       }
-
-      return;
+      
     }
   });
 
@@ -96,14 +96,13 @@ export function runStatement(
     switch (statementType) {
       case (constantTypes.DECLARATION) :
         output = Declare(newStatement, variables, appendVariables);
+      
         break;
       case(constantTypes.BLOCK) :
         output = checkCompleteBlock(firstWord);
         break;  
       case(constantTypes.IO):
         output = inputValue(newStatement, firstWord);
-        break;
-      case (constantTypes.VAR) :
         break;
       case (constantTypes.VAR) :
         break;
