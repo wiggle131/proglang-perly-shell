@@ -13,12 +13,12 @@ export default function HomePage () {
   const [code, setCode] = useState<string>('');
   const [isLoading, setIsLoading] = useState<Boolean>(false);
   const [isError, setIsError] = useState<Boolean>(false);
-  const { getInput, setOutput } = useContext(ConsoleContext);
+  const { consoleInput, getInput, setOutput } = useContext(ConsoleContext);
   const { variables, appendVariables, clearVariables } = useContext(VariablesContext);
   
   function onChange(newValue: string) {
     setCode(newValue);
-  }
+  }console.log(consoleInput)
 
   async function onRun() {
     setIsLoading(true);
@@ -30,7 +30,8 @@ export default function HomePage () {
       appendVariables,
       setOutput,
     );
-    console.log();
+
+    getInput();
     setIsError(terminal.status);
     setOutput(terminal.output);
     setIsLoading(false);
