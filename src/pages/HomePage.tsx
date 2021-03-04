@@ -33,7 +33,7 @@ export default function HomePage () {
 
     getInput();
     setIsError(terminal.status);
-    setOutput(terminal.output);
+    setOutput(terminal.output); //if error
     setIsLoading(false);
   }
 
