@@ -3,6 +3,7 @@ import { SYNTAX_ERROR } from '../constants/errors';
 import { ActualValue, ExecuteOutput, ParseOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 import * as LexicalAnalyzer from './LexicalAnalyzer';
+import { CheckSyntax } from './Output';
 import Declare from './VariableDeclaration';
 
 export function executeProgram (
@@ -71,6 +72,7 @@ export function runStatement(
       case (constantTypes.BLOCK) :
         break;
       case (constantTypes.IO) :
+        output = CheckSyntax(statement, variables);
         break;
       case (constantTypes.VAR) :
         break;
