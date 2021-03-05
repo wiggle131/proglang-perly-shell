@@ -4,7 +4,7 @@ import { ActualValue, ExecuteOutput, ParseOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 import * as LexicalAnalyzer from './LexicalAnalyzer';
 import Declare from './VariableDeclaration';
-import Append from './Output';
+import Output from './Output';
 
 export function executeProgram (
   lines: Array<string>,
@@ -39,7 +39,6 @@ export function executeProgram (
       output = runStatement(parsedStatement.actualValue, variables, appendVariables, setOutput);
       if (output.status) {
         output.output = output.output.replace(/:lineNumber/, lineNumber.toString());
-        console.log(output.output);
         return;
       }
       
@@ -73,10 +72,7 @@ export function runStatement(
         break;
       case (constantTypes.IO) :
         if(statement[0].value === "OUTPUT:"){
-          console.log("stmnt ",newStatement);
-          console.log(newStatement);
-          console.log("VAR ",variables);
-          output = Append(newStatement, variables, appendVariables);
+          output = Output(newStatement, variables);
           console.log(output.output);
         }
         break;
