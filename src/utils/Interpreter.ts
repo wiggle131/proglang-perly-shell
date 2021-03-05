@@ -4,6 +4,7 @@ import { ActualValue, ExecuteOutput, ParseOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 import * as LexicalAnalyzer from './LexicalAnalyzer';
 import Declare from './VariableDeclaration';
+import Output from './Output';
 
 export function executeProgram (
   lines: Array<string>,
@@ -33,19 +34,17 @@ export function executeProgram (
     if (parsedStatement.error !== '') {
       output.output = parsedStatement.error.replace(/:lineNumber/, lineNumber.toString());
       output.status = true;
-
       return;
     } else {
       output = runStatement(parsedStatement.actualValue, variables, appendVariables, setOutput);
-
       if (output.status) {
         output.output = output.output.replace(/:lineNumber/, lineNumber.toString());
+        return;
       }
-
-      return;
+      
     }
   });
-
+  
   return output;
 }
 
@@ -67,10 +66,15 @@ export function runStatement(
     switch (statementType) {
       case (constantTypes.DECLARATION) :
         output = Declare(newStatement, variables, appendVariables);
+      
         break;
       case (constantTypes.BLOCK) :
         break;
       case (constantTypes.IO) :
+        if(statement[0].value === "OUTPUT:"){
+          output = Output(newStatement, variables);
+          console.log(output.output);
+        }
         break;
       case (constantTypes.VAR) :
         break;
