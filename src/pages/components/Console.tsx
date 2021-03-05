@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import AceEditor from "react-ace";
 import styled, { css } from "styled-components";
 
@@ -16,6 +16,7 @@ type Props = {
 
 export default function Console(props: Props) {
   const { isLoading, status } = props;
+  const [value, setValue] = useState<string>('');
   const refEditor = useRef<AceEditor>(null);
   const { consoleInput, consoleOutput, isInput, setIsInput, setInput, setOutput } = useContext(ConsoleContext);
   const placeholder = isLoading ? 'Running program...' : 'CFPL Interpreter (2021)\nPerly Shell Team';
@@ -42,6 +43,10 @@ export default function Console(props: Props) {
     }
   }
 
+  useEffect(() => {
+    setValue(consoleOutput);
+  }, [consoleOutput])
+
   return(
     <Wrapper onKeyDown={handleKeyPress}>
       <StyledEditor
@@ -61,7 +66,7 @@ export default function Console(props: Props) {
         showPrintMargin={true}
         status={status}
         theme="terminal"
-        value={consoleOutput}
+        value={value}
       />
     </Wrapper>
   );
