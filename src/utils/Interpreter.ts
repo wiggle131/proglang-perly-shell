@@ -9,6 +9,7 @@ import { stat } from 'fs';
 import { MISS_STOP_ERROR,UNEXP_LINE_ERROR } from '../constants/errors';
 import inputValue from './Input';
 
+import Output from './Output';
 
 export function executeProgram (
   lines: Array<string>,
@@ -51,7 +52,6 @@ export function executeProgram (
 
       if (output.status) {
         output.output = output.output.replace(/:lineNumber/, lineNumber.toString());
-        console.log(output.output);
         return;
       }
       
@@ -100,9 +100,16 @@ export function runStatement(
         break;
       case(constantTypes.BLOCK) :
         output = checkCompleteBlock(firstWord);
-        break;  
-      case(constantTypes.IO):
-        output = inputValue(newStatement, firstWord);
+        break;
+      case (constantTypes.BLOCK) :
+        break;
+      case (constantTypes.IO) :
+        if(statement[0].value === "OUTPUT:"){
+          output = Output(newStatement, variables);
+          console.log(output.output);
+        } else {
+          output = inputValue(newStatement, firstWord);
+        }
         break;
       case (constantTypes.VAR) :
         break;

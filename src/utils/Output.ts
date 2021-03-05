@@ -4,17 +4,16 @@ import { APPND_NULL_ERROR } from '../constants/errors';
 import { ActualValue, ExecuteOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 
-export default function Append(
+export default function Output(
     statement: ActualValue[],
     variables: Variable[],
-    appendVariables: (value: Variable[]) => void,
 ): ExecuteOutput {
     const output: ExecuteOutput = {
       output: '',
       status: false,
     }
     let concatFlag = false;
-    let temp,cleanedChar;
+    let temp,cleanedChar,actualOutput;
     statement.forEach((token) => {
       if (output.status) {
         return;
@@ -31,17 +30,17 @@ export default function Append(
       }
       else{
         if(token.type === constantTypes.VAR){
-          variables.forEach((item) => {
-            if(item.identifier === token.value && item.value !== null){
-              if(concatFlag){
-                temp = output.output.concat(item.value.toString());
-                output.output = temp;
-                console.log(output.output);
-              } else{
-                output.output = item.value.toString();
-              }
+            const thisVar =  variables.find((variable: Variable)=> {
+                return variable.identifier === token.value;
+            })
+            if(concatFlag){
+              temp = output.output.concat(thisVar?.value?.toString() ?? '');
+              actualOutput = temp;
+              //console.log(output.output);
+            } else{
+              actualOutput = thisVar?.value?.toString() ?? '';
             }
-          });
+            output.output = actualOutput;
         }
         else if(token.type === constantTypes.CHAR || token.type === constantTypes.FLOAT || token.type === constantTypes.INT){
           console.log(token.value);
@@ -58,6 +57,35 @@ export default function Append(
     });
    return output;
 }
-  
+ 
+export function CheckSyntax(
+  statement: ActualValue[],
+  variables: Variable[]
+  ): ExecuteOutput {
+
+      const output: ExecuteOutput = {
+      output: '',
+      status: false,
+      }
+
+  let actualOutput = '';
+
+  statement.forEach((token) => {
+      if (output.status) {
+        return;
+      }
+          console.log(token)
+          if(token.type === constantTypes.VAR){
+              const thisVar =  variables.find((variable: Variable)=> {
+                  return variable.identifier === token.value;
+              })
+              actualOutput += thisVar?.value?.toString() ?? '';
+              console.log(thisVar)
+          }
+  });
+
+  output.output = actualOutput;
+  return output;
+  }
     
     
