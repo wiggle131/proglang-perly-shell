@@ -24,7 +24,7 @@ export function executeProgram (
   
 
 
-  lines.forEach((line) => {
+  lines.forEach(async (line) => {
     const cleanedLine = line.trim();
     let parsedStatement: ParseOutput;
     lineNumber += 1;
@@ -35,14 +35,14 @@ export function executeProgram (
       parsedStatement = LexicalAnalyzer.parseStatement(line);
     }
 
-    console.log(parsedStatement,output);
+    //console.log(parsedStatement,output);
 
     if (parsedStatement.error !== '') {
       output.output = parsedStatement.error.replace(/:lineNumber/, lineNumber.toString());
       output.status = true;
       return;
     } else {
-      output = runStatement(
+      output = await runStatement(
         parsedStatement.actualValue,
         variables,
         appendVariables,
@@ -74,12 +74,12 @@ export function executeProgram (
 }
 
 
-export function runStatement(
+export async function runStatement(
   statement: ActualValue[],
   variables: Variable[],
   appendVariables: (value: Variable[]) => void,
   setOutput: (value: string) => void,
-) : ExecuteOutput {
+) : Promise<ExecuteOutput> {
   let output : ExecuteOutput = {
     output: '',
     status: false,
@@ -101,8 +101,7 @@ export function runStatement(
         break;
       case (constantTypes.IO) :
         if(statement[0].value === "OUTPUT:"){
-          output = Output(newStatement, variables);
-          console.log(output.output);
+          output = await Output(newStatement, variables, setOutput);
         } else {
           output = inputValue(newStatement, firstWord);
         }

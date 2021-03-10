@@ -18,7 +18,7 @@ export default function HomePage () {
   
   function onChange(newValue: string) {
     setCode(newValue);
-  }console.log(consoleInput)
+  }
 
   async function onRun() {
     setIsLoading(true);
@@ -32,7 +32,9 @@ export default function HomePage () {
     );
 
     setIsError(terminal.status);
-    setOutput(terminal.output); //if error
+    if (terminal.status) {
+      setOutput(terminal.output); //if error
+    }
     setIsLoading(false);
   }
 
