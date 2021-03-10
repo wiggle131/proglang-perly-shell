@@ -58,12 +58,12 @@ export function executeProgram (
 
     let flag = Number(localStorage.getItem('blockFlag'));
 
-    if(flag !== 2){
+    if(flag !== 2 && !output.status){
       output.output = MISS_STOP_ERROR;
       output.status = true;
     }
 
-    if(lines[lines.length-1] != "STOP" && flag == 2){
+    if(lines[lines.length-1] != "STOP" && flag == 2 && !output.status){
       output.output = UNEXP_LINE_ERROR;
       output.status = true;
     }

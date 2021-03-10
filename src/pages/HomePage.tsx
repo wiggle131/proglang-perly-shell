@@ -31,7 +31,6 @@ export default function HomePage () {
       setOutput,
     );
 
-    getInput();
     setIsError(terminal.status);
     setOutput(terminal.output); //if error
     setIsLoading(false);
