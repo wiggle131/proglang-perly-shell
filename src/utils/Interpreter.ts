@@ -48,7 +48,6 @@ export function executeProgram (
         appendVariables,
         setOutput,
       );
-
       if (output.status) {
         output.output = output.output.replace(/:lineNumber/, lineNumber.toString());
         return;
@@ -107,8 +106,6 @@ export function runStatement(
         } else {
           output = inputValue(newStatement, firstWord);
         }
-        break;
-      case (constantTypes.VAR) :
         break;
       case (constantTypes.VAR) :
         break;

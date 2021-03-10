@@ -15,3 +15,5 @@ export const MISS_START_ERROR = 'Missing START statement.';
 export const MISS_STOP_ERROR = 'Missing STOP statement.';
 
 export const UNEXP_LINE_ERROR = 'Unexpected line statement after STOP.'
+
+export const APPND_NULL_ERROR = `Appending error on line :lineNumber: Cannot Append to Null: ':token'.`

@@ -19,7 +19,7 @@ function App() {
   localStorage.setItem('blockFlag', '0');
 
   function handleSetBlockFlag(value: number){
-    setBlockFlag(value);console.log(blockFlag);
+    setBlockFlag(value);
   }
 
   function resetBlockFlag(){
