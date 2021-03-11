@@ -5,11 +5,11 @@ import { dataType } from '../constants/reservedWords';
 import { ActualValue, ExecuteOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 
-export default async function Output(
+export default function Output(
     statement: ActualValue[],
     variables: Variable[],
     setOutput: (value: string) => void,
-): Promise<ExecuteOutput> {
+): ExecuteOutput {
     const output: ExecuteOutput = {
       output: '',
       status: false,
@@ -49,7 +49,11 @@ export default async function Output(
           if(token.type === constantTypes.CHAR){
             const tempS = token.value.toString();
             cleanedChar = tempS.substring(1,tempS.length-1);
-            temp = output.output.concat(cleanedChar);
+
+            //loop each char
+
+            const withNewLine = cleanedChar.replace(':newline','\n');
+            temp = output.output.concat(withNewLine);
           }else
             temp = output.output.concat(token.value.toString());
           output.output = temp;
@@ -58,7 +62,7 @@ export default async function Output(
     });
 
     if (!output.status) {
-      await setOutput(output.output);
+      setOutput(output.output);
     }
    return output;
 }

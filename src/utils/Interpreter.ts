@@ -1,12 +1,12 @@
 import constantTypes from '../constants/constantTypes';
-import { SYNTAX_ERROR } from '../constants/errors';
+import { SYNTAX_ERROR, MISS_STOP_ERROR,UNEXP_LINE_ERROR } from '../constants/errors';
 import { ActualValue, ExecuteOutput, ParseOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 import * as LexicalAnalyzer from './LexicalAnalyzer';
 import Declare from './VariableDeclaration';
 import checkCompleteBlock from './Block';
+import { Evaluate } from './EvaluateExpressions';
 import { stat } from 'fs';
-import { MISS_STOP_ERROR,UNEXP_LINE_ERROR } from '../constants/errors';
 import inputValue from './Input';
 import Output from './Output';
 
@@ -21,10 +21,9 @@ export function executeProgram (
     status: false,
   };
   let lineNumber = 0;
-  
 
 
-  lines.forEach(async (line) => {
+  lines.forEach((line) => {
     const cleanedLine = line.trim();
     let parsedStatement: ParseOutput;
     lineNumber += 1;
@@ -42,7 +41,7 @@ export function executeProgram (
       output.status = true;
       return;
     } else {
-      output = await runStatement(
+      output = runStatement(
         parsedStatement.actualValue,
         variables,
         appendVariables,
@@ -56,30 +55,32 @@ export function executeProgram (
     }
   });
 
+  if (!output.status) {
     let flag = Number(localStorage.getItem('blockFlag'));
-
-    if(flag !== 2 && !output.status){
+  
+    if(flag !== 2){
       output.output = MISS_STOP_ERROR;
       output.status = true;
     }
-
-    if(lines[lines.length-1] != "STOP" && flag == 2 && !output.status){
+  
+    if(lines[lines.length-1] != "STOP" && flag == 2){
       output.output = UNEXP_LINE_ERROR;
       output.status = true;
     }
-
-  localStorage.setItem('blockFlag', '0'); //reset the blockFlag after reading all the lines
+  
+    localStorage.setItem('blockFlag', '0'); //reset the blockFlag after reading all the lines
+  }
 
   return output;
 }
 
 
-export async function runStatement(
+export function runStatement(
   statement: ActualValue[],
   variables: Variable[],
   appendVariables: (value: Variable[]) => void,
   setOutput: (value: string) => void,
-) : Promise<ExecuteOutput> {
+) : ExecuteOutput {
   let output : ExecuteOutput = {
     output: '',
     status: false,
@@ -101,12 +102,13 @@ export async function runStatement(
         break;
       case (constantTypes.IO) :
         if(statement[0].value === "OUTPUT:"){
-          output = await Output(newStatement, variables, setOutput);
+          output = Output(newStatement, variables, setOutput);
         } else {
           output = inputValue(newStatement, firstWord);
         }
         break;
       case (constantTypes.VAR) :
+        output = Evaluate(statement, variables);
         break;
       default:
         output.output = SYNTAX_ERROR.replace(/:token/, statement[0].value);

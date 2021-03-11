@@ -2,7 +2,15 @@ export const CONST_ERROR = `Constant error on line :lineNumber: Invalid constant
 
 export const SYNTAX_ERROR = `Syntax error on line :lineNumber: Invalid syntax at ':token'.`;
 
+export const EXPRESSION_DUP_EQ_ERROR = `Expression error on line :lineNumber: Lacking '='.`;
+
+export const EXPRESSION_ERROR = `Expression error on line :lineNumber: Invalid expression.`;
+
 export const DUP_VAR_ERROR = `Variable error on line :lineNumber: Duplicate variable ':token'.`;
+
+export const NO_VAR_ERROR = `Variable error on line :lineNumber: No variable ':token'.`;
+
+export const NULL_VAR_ERROR = `Variable error on line :lineNumber: Null variable ':token'.`;
 
 export const STOP_ERROR = 'STOP is already implemented';
 

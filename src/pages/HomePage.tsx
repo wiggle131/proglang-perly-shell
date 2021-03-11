@@ -23,6 +23,8 @@ export default function HomePage () {
   async function onRun() {
     setIsLoading(true);
     clearVariables();
+    localStorage.setItem('blockFlag', '0');
+    await setOutput('');
 
     const terminal = await Interpreter.executeProgram(
       code.split('\n'),
@@ -33,7 +35,7 @@ export default function HomePage () {
 
     setIsError(terminal.status);
     if (terminal.status) {
-      setOutput(terminal.output); //if error
+      await setOutput(terminal.output); //if error
     }
     setIsLoading(false);
   }

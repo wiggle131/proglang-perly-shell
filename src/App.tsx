@@ -15,7 +15,6 @@ function App() {
   const [consoleOutput, setConsoleOutput] = useState<string>('');
   const [consoleInput, setConsoleInput] = useState<string>('');
   const [isInput, setIsInput] = useState<boolean>(false);
-  localStorage.setItem('blockFlag', '0');
 
   function getInput() {
     setIsInput(true);
