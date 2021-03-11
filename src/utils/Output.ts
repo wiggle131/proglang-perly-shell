@@ -9,6 +9,7 @@ export default function Output(
     statement: ActualValue[],
     variables: Variable[],
     setOutput: (value: string) => void,
+    consoleOutput: string,
 ): ExecuteOutput {
     const output: ExecuteOutput = {
       output: '',
@@ -62,7 +63,7 @@ export default function Output(
     });
 
     if (!output.status) {
-      setOutput(output.output);
+      setOutput(consoleOutput+output.output);
     }
    return output;
 }

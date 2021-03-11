@@ -5,24 +5,44 @@ import { Variable } from '../types/Variable.type';
 import { MISS_START_ERROR } from '../constants/errors';
 import { count } from 'console';
 
-export default function inputValue(statement: ActualValue[], firstWord: String): ExecuteOutput {
-        let output : ExecuteOutput = {
-          output: '',
-          status: false,
-        };
+export default function inputValue(
+  statement: ActualValue[],
+  firstWord: String,
+  getInput: () => Promise<string>,
+): ExecuteOutput {
+  let output : ExecuteOutput = {
+      output: '',
+      status: false,
+  };
+  const hasInput = !!Number(localStorage.getItem('hasInput'));
 
-        let count = 0;
+  if (hasInput) {
+    getInput();
 
-        if(firstWord=="INPUT:") {statement.forEach((token) => {
+    return {
+      ...output,
+      output: 'INPUT',
+      status: true,
+    };
+  }
 
-            if(token.type === constantTypes.VAR){
-                count++;
-            }
-            
-        });
-    }
+  getInput().then((input) => {  
+    localStorage.setItem('hasInput', '1');
+    localStorage.setItem('inputLine', '0');
+    localStorage.setItem('blockFlag', '0');
+    let count = 0;
+  
+    statement.forEach((token) => {
+      console.log(input);
+  
+        if(token.type === constantTypes.VAR){
+            count++;
+        }
         
-        //console.log(count);
-        return output;
+    });
+  });
+      
+  //console.log(count);
+  return output;
 }
 

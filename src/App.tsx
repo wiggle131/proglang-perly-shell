@@ -11,31 +11,36 @@ import { Variable } from './types/Variable.type';
 
 function App() {
   const [variables, setVariables] = useState<Variable[]>([]);
-  const [value, setValue] = useState<string>('');
-  const [consoleOutput, setConsoleOutput] = useState<string>('');
+  const [consoleOutput, setConsoleOutput] = useState({output: ''});
   const [consoleInput, setConsoleInput] = useState<string>('');
   const [isInput, setIsInput] = useState<boolean>(false);
 
-  function getInput() {
-    setIsInput(true);
+  async function getInput() {
+    const hasInput = !!Number(localStorage.getItem('hasInput'));
 
-    return value;
+    if (!hasInput) {
+      return consoleInput;
+    } else {
+      setIsInput(true);
+      setConsoleInput('');
+      return '';
+    }
   }
 
-  function setInput(value: string) {
-    setConsoleInput(value);
+  async function setInput(value: string) {
+    await setConsoleInput(value);
   }
 
-  function setOutput(value: string) {
-    setConsoleOutput(value);
+  async function setOutput(value: string) {
+    await setConsoleOutput({output: value});
   }
 
   function clearInput() {
     setConsoleInput('');
   }
 
-  function clearOutput() {
-    setConsoleOutput('');
+  async function clearOutput() {
+    consoleOutput.output = '';
   }
 
   function handleSetIsInput(value: boolean) {

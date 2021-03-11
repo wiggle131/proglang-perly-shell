@@ -6,7 +6,6 @@ import * as LexicalAnalyzer from './LexicalAnalyzer';
 import Declare from './VariableDeclaration';
 import checkCompleteBlock from './Block';
 import { Evaluate } from './EvaluateExpressions';
-import { stat } from 'fs';
 import inputValue from './Input';
 import Output from './Output';
 
@@ -15,6 +14,9 @@ export function executeProgram (
   variables: Variable[],
   appendVariables: (value: Variable[]) => void,
   setOutput: (value: string) => void,
+  isInput: Boolean,
+  getInput: () => Promise<string>,
+  consoleOutput: string,
 ) : ExecuteOutput {
   let output : ExecuteOutput = {
     output: '',
@@ -46,9 +48,16 @@ export function executeProgram (
         variables,
         appendVariables,
         setOutput,
+        isInput,
+        getInput,
+        consoleOutput,
       );
       if (output.status) {
-        output.output = output.output.replace(/:lineNumber/, lineNumber.toString());
+        if (output.output === 'INPUT') {
+          localStorage.setItem('inputLine', lineNumber.toString());
+        } else {
+          output.output = output.output.replace(/:lineNumber/, lineNumber.toString());
+        }
         return;
       }
       
@@ -80,6 +89,9 @@ export function runStatement(
   variables: Variable[],
   appendVariables: (value: Variable[]) => void,
   setOutput: (value: string) => void,
+  isInput: Boolean,
+  getInput: () => Promise<string>,
+  consoleOutput: string,
 ) : ExecuteOutput {
   let output : ExecuteOutput = {
     output: '',
@@ -102,9 +114,9 @@ export function runStatement(
         break;
       case (constantTypes.IO) :
         if(statement[0].value === "OUTPUT:"){
-          output = Output(newStatement, variables, setOutput);
+          output = Output(newStatement, variables, setOutput, consoleOutput);
         } else {
-          output = inputValue(newStatement, firstWord);
+          output = inputValue(newStatement, firstWord, getInput);
         }
         break;
       case (constantTypes.VAR) :

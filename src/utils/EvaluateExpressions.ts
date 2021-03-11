@@ -1,6 +1,6 @@
 import constantTypes from '../constants/constantTypes';
 import { NO_VAR_ERROR, NULL_VAR_ERROR, EXPRESSION_DUP_EQ_ERROR, EXPRESSION_ERROR } from '../constants/errors';
-import { bool, dataType, declartion } from '../constants/reservedWords';
+import { dataType } from '../constants/reservedWords';
 import { ActualValue, ExecuteOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 

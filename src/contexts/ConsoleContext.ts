@@ -2,26 +2,26 @@ import { createContext } from 'react';
 
 type Context = {
   consoleInput: string;
-  consoleOutput: string;
+  consoleOutput: {output: string};
   isInput: Boolean;
-  getInput: () => string;
+  getInput: () => Promise<string>;
   setIsInput: (value: boolean) => void;
-  setInput: (value: string) => void;
-  setOutput: (value: string) => void;
+  setInput: (value: string) => Promise<void>;
+  setOutput: (value: string) => Promise<void>;
   clearInput: () => void;
-  clearOutput: () => void;
+  clearOutput: () => Promise<void>;
 }
 
 const defaultContext: Context = {
   consoleInput: '',
-  consoleOutput: '',
+  consoleOutput: {output: ''},
   isInput: false,
-  getInput: () => {return ''},
+  getInput: async () => {return ''},
   setIsInput: () => {},
-  setInput: () => {},
-  setOutput: () => {},
+  setInput: async () => {},
+  setOutput: async () => {},
   clearInput: () => {},
-  clearOutput: () => {},
+  clearOutput: async () => {},
 }
 
 export const ConsoleContext = createContext<Context>(defaultContext);
