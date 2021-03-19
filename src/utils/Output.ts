@@ -1,12 +1,15 @@
 
 import constantTypes from '../constants/constantTypes';
 import { APPND_NULL_ERROR } from '../constants/errors';
+import { dataType } from '../constants/reservedWords';
 import { ActualValue, ExecuteOutput } from '../types/Output.type';
 import { Variable } from '../types/Variable.type';
 
 export default function Output(
     statement: ActualValue[],
     variables: Variable[],
+    setOutput: (value: string) => void,
+    consoleOutput: string,
 ): ExecuteOutput {
     const output: ExecuteOutput = {
       output: '',
@@ -43,17 +46,24 @@ export default function Output(
             output.output = actualOutput;
         }
         else if(token.type === constantTypes.CHAR || token.type === constantTypes.FLOAT || token.type === constantTypes.INT){
-          console.log(token.value);
+          
           if(token.type === constantTypes.CHAR){
-            cleanedChar = token.value.toString();
-            cleanedChar = cleanedChar.replaceAll('\'','');
-            temp = output.output.concat(cleanedChar);
+            const tempS = token.value.toString();
+            cleanedChar = tempS.substring(1,tempS.length-1);
+
+            //loop each char
+
+            const withNewLine = cleanedChar.replace(':newline','\n');
+            temp = output.output.concat(withNewLine);
           }else
             temp = output.output.concat(token.value.toString());
           output.output = temp;
         }
       }
-      
     });
+
+    if (!output.status) {
+      setOutput(consoleOutput+output.output);
+    }
    return output;
 }

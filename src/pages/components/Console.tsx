@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import AceEditor from "react-ace";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 import { ConsoleContext } from '../../contexts/ConsoleContext';
 import { inputRegEx } from '../../constants/RegEx';
@@ -18,10 +18,10 @@ export default function Console(props: Props) {
   const { isLoading, status } = props;
   const [value, setValue] = useState<string>('');
   const refEditor = useRef<AceEditor>(null);
-  const { consoleInput, consoleOutput, isInput, setIsInput, setInput, setOutput } = useContext(ConsoleContext);
+  const { consoleInput, consoleOutput, isInput, setInput, setIsInput } = useContext(ConsoleContext);
   const placeholder = isLoading ? 'Running program...' : 'CFPL Interpreter (2021)\nPerly Shell Team';
 
-  function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {
+  async function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {
     if (isInput) {
       const charCode = event.key;
       let newValue = consoleInput;
@@ -29,23 +29,36 @@ export default function Console(props: Props) {
       if (charCode === 'Backspace') {
         newValue = consoleInput.slice(0, -1);
       } else if (charCode === 'Enter') {
-        setIsInput(false);
+        localStorage.setItem('hasInput', '0');
+
+        await setIsInput(false);
+        consoleOutput.output+=consoleInput+'\n';
+
+        return;
       } else if (checkKeyIfSpecialCharacter(charCode)){
         newValue = consoleInput;
+      } else if (event.code === 'Space'){
+        newValue = consoleInput + ' ';
       } else if (inputRegEx.test(charCode)) {
         newValue = consoleInput + charCode;
       }
 
-      setInput(newValue);console.log(newValue)
-      setOutput(newValue);
+      await setInput(newValue);
       (refEditor as any)?.current.editor.gotoLine((newValue.match(/\n/g) || []).length+1);
-      (refEditor as any)?.current.editor.navigateLineEnd();
     }
+    
+    (refEditor as any)?.current.editor.navigateLineEnd();
   }
 
   useEffect(() => {
-    setValue(consoleOutput);
+    setValue(consoleOutput.output);
   }, [consoleOutput])
+
+  useEffect(() => {
+    setValue(consoleOutput.output+consoleInput);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [consoleInput])
 
   return(
     <Wrapper onKeyDown={handleKeyPress}>
