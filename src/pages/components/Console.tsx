@@ -30,6 +30,7 @@ export default function Console(props: Props) {
         newValue = consoleInput.slice(0, -1);
       } else if (charCode === 'Enter') {
         localStorage.setItem('hasInput', '0');
+        localStorage.setItem('input', consoleInput);
 
         await setIsInput(false);
         consoleOutput.output+=consoleInput+'\n';

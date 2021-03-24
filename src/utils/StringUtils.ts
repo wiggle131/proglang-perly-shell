@@ -1,3 +1,4 @@
+/* eslint-disable no-regex-spaces */
 export function checkKeyIfSpecialCharacter (value: string) {
   return (
     value === 'Unidentified' ||
@@ -17,12 +18,15 @@ export function tokenize(value: string) {
     .replace(/\//g, " / ")
     .replace(/%/g, " % ")
     .replace(/=/g, " = ")
+    .replace(/%/g, " % ")
+    .replace(/</g, " < ")
+    .replace(/>/g, " > ")
     .replace(/\(/g, " ( ")
     .replace(/\)/g, " ) ")
     .replace(/= =/g, "==")
     .replace(/< =/g, "<=")
     .replace(/> =/g, ">=")
-    .replace(/< >/g, " <> ")
+    .replace(/<  >/g, " <> ")
     .replace(/= =/g, " == ")
     .split(/[\s]+/);
 }
