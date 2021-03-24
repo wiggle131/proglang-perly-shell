@@ -16,7 +16,7 @@ export function executeProgram (
   setOutput: (value: string) => void,
   isInput: Boolean,
   getInput: () => Promise<string>,
-  consoleOutput: string,
+  consoleOutput: {output: string},
 ) : ExecuteOutput {
   let output : ExecuteOutput = {
     output: '',
@@ -91,7 +91,7 @@ export function runStatement(
   setOutput: (value: string) => void,
   isInput: Boolean,
   getInput: () => Promise<string>,
-  consoleOutput: string,
+  consoleOutput: {output: string},
 ) : ExecuteOutput {
   let output : ExecuteOutput = {
     output: '',

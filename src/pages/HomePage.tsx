@@ -62,7 +62,7 @@ export default function HomePage () {
       setOutput,
       isInput,
       getInput,
-      consoleOutput.output,
+      consoleOutput,
     );
 
     if (terminal.output !== 'INPUT') {
@@ -71,6 +71,9 @@ export default function HomePage () {
         await clearVariables();
         await setOutput(terminal.output); //if error
         setIsRunning(false);
+      }
+      else{
+        setOutput(consoleOutput.output);
       }
     }
     

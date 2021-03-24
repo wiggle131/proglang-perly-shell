@@ -9,18 +9,24 @@ export default function Output(
     statement: ActualValue[],
     variables: Variable[],
     setOutput: (value: string) => void,
-    consoleOutput: string,
-): ExecuteOutput {
+    consoleOutput: {output: string},
+    ): ExecuteOutput {
     const output: ExecuteOutput = {
       output: '',
       status: false,
     }
     let concatFlag = false;
+    let flagOnBrackets = false;
+    let flagNegative = false;
     let temp,cleanedChar,actualOutput;
+    let varString = ''
     statement.forEach((token) => {
       if (output.status) {
         return;
-      } 
+      }
+      else if(token.value === '-' && token.type === constantTypes.OPERATOR){
+        flagNegative = true;
+      }
       else if(token.value === '&' && token.type === constantTypes.SPECIAL){
          if(output.output !== ''){
            concatFlag = true;
@@ -36,24 +42,54 @@ export default function Output(
             const thisVar =  variables.find((variable: Variable)=> {
                 return variable.identifier === token.value;
             })
+            if(flagNegative && (thisVar?.dataType === dataType.INT || thisVar?.dataType === dataType.FLOAT)){
+              thisVar.value = Number(thisVar.value) * -1;
+            }
             if(concatFlag){
               temp = output.output.concat(thisVar?.value?.toString() ?? '');
               actualOutput = temp;
-              //console.log(output.output);
+              console.log(output.output);
             } else{
               actualOutput = thisVar?.value?.toString() ?? '';
             }
             output.output = actualOutput;
+            if(flagNegative && (thisVar?.dataType === dataType.INT || thisVar?.dataType === dataType.FLOAT)){
+              thisVar.value = Number(thisVar.value) * -1;
+            }
         }
         else if(token.type === constantTypes.CHAR || token.type === constantTypes.FLOAT || token.type === constantTypes.INT){
           
           if(token.type === constantTypes.CHAR){
             const tempS = token.value.toString();
             cleanedChar = tempS.substring(1,tempS.length-1);
+            
+            varString = '';
 
-            //loop each char
+            for(let i = 0; i < cleanedChar.length; i++){
+              if(cleanedChar[i] === '['){
+                flagOnBrackets = true;
+                continue;
+              }
+              if(flagOnBrackets){
+                if(cleanedChar[i] !== ']'){
+                  varString += cleanedChar[i];
+                }
+                else{
+                  flagOnBrackets = false;
+                  continue;
+                }
+              }
+              else{
+                if(cleanedChar[i] === '#'){
+                  varString += ':newline';
+                }
+                else{
+                  varString += cleanedChar[i];
+                }
+              }
+            }
 
-            const withNewLine = cleanedChar.replace(':newline','\n');
+            const withNewLine = varString.replace(':newline','\n');
             temp = output.output.concat(withNewLine);
           }else
             temp = output.output.concat(token.value.toString());
@@ -63,7 +99,7 @@ export default function Output(
     });
 
     if (!output.status) {
-      setOutput(consoleOutput+output.output);
+      consoleOutput.output += output.output;
     }
    return output;
 }
