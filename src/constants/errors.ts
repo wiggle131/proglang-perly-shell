@@ -24,4 +24,6 @@ export const MISS_STOP_ERROR = 'Missing STOP statement.';
 
 export const UNEXP_LINE_ERROR = 'Unexpected line statement after STOP.';
 
-export const VAR_NOT_INIT = `Variable ':token' not initialized.`;
+export const VAR_NOT_INIT = `Variable error on line :lineNumber: Variable ':token' not initialized.`;
+
+export const LOOP_EXCEED_ERROR = `Loop error on line :lineNumber: Loop exceded maximum iterations.`;

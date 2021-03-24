@@ -8,9 +8,8 @@ import { Variable } from '../types/Variable.type';
 
 export default function Declare(
   statement: ActualValue[],
-  variables: Variable[],
-  appendVariables: (value: Variable[]) => void,
 ): ExecuteOutput {
+  const variables: Variable[] = JSON.parse(localStorage.getItem('variables') || '[]');
   const output: ExecuteOutput = {
     output: '',
     status: false,
@@ -79,7 +78,7 @@ export default function Declare(
         output.output = DUP_VAR_ERROR.replace(/:token/, identifier ?? '');
         output.status = true;
       } else if (stack.isEmpty()) {
-        appendVariables(newVars);
+        newVars.forEach((value) => variables.push(value));
       } else {
         output.output = SYNTAX_ERROR.replace(/:token/, stack.peek().value);
         output.status = true;
@@ -100,6 +99,7 @@ export default function Declare(
     output.status = true;
   }
 
+  localStorage.setItem('variables',JSON.stringify(variables));
   return output;
 }
 

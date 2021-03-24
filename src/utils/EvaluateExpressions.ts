@@ -8,8 +8,8 @@ import { isVariableType } from './VariableDeclaration';
 
 export function Evaluate(
   statement: ActualValue[],
-  variables: Variable[],
 ): ExecuteOutput {
+  let variables: Variable[] = JSON.parse(localStorage.getItem('variables') || '[]');
   const output: ExecuteOutput = {
     output: '',
     status: false,
@@ -107,6 +107,7 @@ export function Evaluate(
     }
   }
   
+  localStorage.setItem('variables',JSON.stringify(variables));
   return output;
 }
 

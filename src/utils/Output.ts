@@ -7,10 +7,9 @@ import { Variable } from '../types/Variable.type';
 
 export default function Output(
     statement: ActualValue[],
-    variables: Variable[],
-    setOutput: (value: string) => void,
     consoleOutput: {output: string},
     ): ExecuteOutput {
+    let variables: Variable[] = JSON.parse(localStorage.getItem('variables') || '[]');
     const output: ExecuteOutput = {
       output: '',
       status: false,
@@ -24,7 +23,8 @@ export default function Output(
       if (output.status) {
         return;
       }
-      else if(token.value === '-' && token.type === constantTypes.OPERATOR){
+
+      if(token.value === '-' && token.type === constantTypes.OPERATOR){
         flagNegative = true;
       }
       else if(token.value === '&' && token.type === constantTypes.SPECIAL){
@@ -37,63 +37,71 @@ export default function Output(
           concatFlag = false;
          }
       }
-      else{
-        if(token.type === constantTypes.VAR){
-            const thisVar =  variables.find((variable: Variable)=> {
-                return variable.identifier === token.value;
-            })
-            if(flagNegative && (thisVar?.dataType === dataType.INT || thisVar?.dataType === dataType.FLOAT)){
-              thisVar.value = Number(thisVar.value) * -1;
+      else if(token.type === constantTypes.VAR){
+        // console.log(variables);
+        // variables = thisVariables.map((value)=> value);
+        let thisVar: Variable = {
+          dataType: '',
+          identifier: '',
+          value: '',
+        };
+        variables.forEach((variable: Variable)=> {
+          // console.log(variable);
+            if(variable.identifier === token.value){
+              thisVar = variable;
             }
-            if(concatFlag){
-              temp = output.output.concat(thisVar?.value?.toString() ?? '');
-              actualOutput = temp;
-            } else{
-              actualOutput = thisVar?.value?.toString() ?? '';
-            }
-            output.output = actualOutput;
-            if(flagNegative && (thisVar?.dataType === dataType.INT || thisVar?.dataType === dataType.FLOAT)){
-              thisVar.value = Number(thisVar.value) * -1;
-            }
+        })
+        if(flagNegative && (thisVar?.dataType === dataType.INT || thisVar?.dataType === dataType.FLOAT)){
+          thisVar.value = Number(thisVar.value) * -1;
         }
-        else if(token.type === constantTypes.CHAR || token.type === constantTypes.FLOAT || token.type === constantTypes.INT){
+        if(concatFlag){
+          temp = output.output.concat(thisVar?.value?.toString() ?? '');
+          actualOutput = temp;
+        } else{
+          actualOutput = thisVar?.value?.toString() ?? '';
+        }
+        output.output = actualOutput;
+        if(flagNegative && (thisVar?.dataType === dataType.INT || thisVar?.dataType === dataType.FLOAT)){
+          thisVar.value = Number(thisVar.value) * -1;
+        }
+      }
+      else if(token.type === constantTypes.CHAR || token.type === constantTypes.FLOAT || token.type === constantTypes.INT){
+        
+        if(token.type === constantTypes.CHAR){
+          const tempS = token.value.toString();
+          cleanedChar = tempS.substring(1,tempS.length-1);
           
-          if(token.type === constantTypes.CHAR){
-            const tempS = token.value.toString();
-            cleanedChar = tempS.substring(1,tempS.length-1);
-            
-            varString = '';
+          varString = '';
 
-            for(let i = 0; i < cleanedChar.length; i++){
-              if(!flagOnBrackets && cleanedChar[i] === '['){
-                flagOnBrackets = true;
-                continue;
-              }
-              if(flagOnBrackets){
-                if(cleanedChar[i] !== ']'){
-                  varString += cleanedChar[i];
-                }
-                else{
-                  flagOnBrackets = false;
-                  continue;
-                }
+          for(let i = 0; i < cleanedChar.length; i++){
+            if(!flagOnBrackets && cleanedChar[i] === '['){
+              flagOnBrackets = true;
+              continue;
+            }
+            if(flagOnBrackets){
+              if(cleanedChar[i] !== ']'){
+                varString += cleanedChar[i];
               }
               else{
-                if(cleanedChar[i] === '#'){
-                  varString += ':newline';
-                }
-                else{
-                  varString += cleanedChar[i];
-                }
+                flagOnBrackets = false;
+                continue;
               }
             }
+            else{
+              if(cleanedChar[i] === '#'){
+                varString += ':newline';
+              }
+              else{
+                varString += cleanedChar[i];
+              }
+            }
+          }
 
-            const withNewLine = varString.replace(':newline','\n');
-            temp = output.output.concat(withNewLine);
-          }else
-            temp = output.output.concat(token.value.toString());
-          output.output = temp;
-        }
+        const withNewLine = varString.replace(':newline','\n');
+        temp = output.output.concat(withNewLine);
+        }else
+          temp = output.output.concat(token.value.toString());
+        output.output = temp;
       }
     });
 
