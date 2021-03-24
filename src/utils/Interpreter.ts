@@ -63,7 +63,6 @@ export function executeProgram (
       
     }
    
-    console.log(variables);
     let flag = Number(localStorage.getItem('blockFlag'));
     if(flag === 2){
       if(parsedStatement.actualValue[0].value === "STOP"){

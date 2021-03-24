@@ -28,7 +28,8 @@ export function Evaluate(
       return;
     }
 
-    if (type === constantTypes.VAR && (index === 0 || statement[index-1].value === '=')) {
+    if (type === constantTypes.VAR && (index === 0 || statement[index-1].value === '=')
+      && (index < statement.length-1 && statement[index+1].value === '=')) {
       if (variables.find((variable: Variable) => variable.identifier === token.value)) {
         isLeftDone = false;
         leftHandSide.push(token);
@@ -36,9 +37,10 @@ export function Evaluate(
         output.output = NO_VAR_ERROR.replace(/:token/, token.value);
         output.status = true;
       }
-    } else if (isVariableType(type)) {
-      if (token.value) {
-        expression += ' ' + token.value;
+    } else if (type === constantTypes.VAR) {
+      const thisVar = variables.find((variable: Variable) => variable.identifier === token.value);
+      if (thisVar?.value) {
+        expression += ' ' + thisVar?.value;
       } else {
         output.output = NULL_VAR_ERROR.replace(/:token/, token.value);
         output.status = true;
@@ -49,6 +51,28 @@ export function Evaluate(
       } else {
         output.output = EXPRESSION_DUP_EQ_ERROR;
         output.status = true;
+      }
+    } else if (token.type === constantTypes.OPERATOR) {
+      if (!isLeftDone) {
+        output.output = EXPRESSION_ERROR;
+        output.status = true;
+      } else {
+        switch(token.value){
+          case '<>':
+            expression += '!=';
+            break;
+          case 'AND':
+            expression += '&&';
+            break;
+          case 'OR':
+            expression += '||';
+            break;
+          case 'NOT':
+            expression += ' !';
+            break;
+          default:
+            expression += token.value;
+        }
       }
     } else {
       if (isLeftDone) {
