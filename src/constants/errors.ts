@@ -27,3 +27,5 @@ export const UNEXP_LINE_ERROR = 'Unexpected line statement after STOP.';
 export const VAR_NOT_INIT = `Variable error on line :lineNumber: Variable ':token' not initialized.`;
 
 export const LOOP_EXCEED_ERROR = `Loop error on line :lineNumber: Loop exceded maximum iterations.`;
+
+export const INPUT_INVALID = `The input provided does not match to its data type.`;
