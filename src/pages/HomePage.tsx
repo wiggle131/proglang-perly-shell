@@ -77,7 +77,9 @@ export default function HomePage () {
       }
     }
     
-    if (!hasInput) {
+    const newInputLine = Number(localStorage.getItem('inputLine'));
+
+    if (hasInput && newInputLine === 0) {
       setIsRunning(false);
     }
   }

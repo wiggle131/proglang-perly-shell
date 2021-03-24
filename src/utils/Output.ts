@@ -48,7 +48,6 @@ export default function Output(
             if(concatFlag){
               temp = output.output.concat(thisVar?.value?.toString() ?? '');
               actualOutput = temp;
-              console.log(output.output);
             } else{
               actualOutput = thisVar?.value?.toString() ?? '';
             }
@@ -66,7 +65,7 @@ export default function Output(
             varString = '';
 
             for(let i = 0; i < cleanedChar.length; i++){
-              if(cleanedChar[i] === '['){
+              if(!flagOnBrackets && cleanedChar[i] === '['){
                 flagOnBrackets = true;
                 continue;
               }
