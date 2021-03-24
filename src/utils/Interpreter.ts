@@ -62,18 +62,27 @@ export function executeProgram (
       }
       
     }
-  });
+   
+    console.log(variables);
+    let flag = Number(localStorage.getItem('blockFlag'));
+    if(flag === 2){
+      if(parsedStatement.actualValue[0].value === "STOP"){
+        return;
+      }
 
+      else if(parsedStatement.actualValue.length>0){
+        output.output = UNEXP_LINE_ERROR;
+        output.status = true;
+      }
+        
+    }
+    
+  });
   if (!output.status) {
     let flag = Number(localStorage.getItem('blockFlag'));
   
     if(flag !== 2){
       output.output = MISS_STOP_ERROR;
-      output.status = true;
-    }
-  
-    if(lines[lines.length-1] != "STOP" && flag == 2){
-      output.output = UNEXP_LINE_ERROR;
       output.status = true;
     }
   
@@ -116,7 +125,7 @@ export function runStatement(
         if(statement[0].value === "OUTPUT:"){
           output = Output(newStatement, variables, setOutput, consoleOutput);
         } else {
-          output = inputValue(newStatement, firstWord, getInput);
+          output = inputValue(newStatement, firstWord, getInput, variables);
         }
         break;
       case (constantTypes.VAR) :
