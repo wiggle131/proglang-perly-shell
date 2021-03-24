@@ -22,4 +22,6 @@ export const MISS_START_ERROR = 'Missing START statement.';
 
 export const MISS_STOP_ERROR = 'Missing STOP statement.';
 
-export const UNEXP_LINE_ERROR = 'Unexpected line statement after STOP.'
+export const UNEXP_LINE_ERROR = 'Unexpected line statement after STOP.';
+
+export const VAR_NOT_INIT = `Variable ':token' not initialized.`;
